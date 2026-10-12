@@ -14,7 +14,6 @@ function addTask() {
   const text = input.value;
   errorEl.hidden = true;
 
-  //Проверка на пустую строку или строку с пробелами
   if (text.trim() === "") {
     errorEl.hidden = false;
     return;
@@ -33,14 +32,13 @@ function toggleTask(id) {
   render();
 }
 
-//Work
 function deleteTask(id) {
   tasks = tasks.filter((task) => task.id !== id);
   render();
 }
 
 function clearCompleted() {
-  tasks = [];
+  tasks = tasks.filter((task) => !task.done);
   render();
 }
 
@@ -54,13 +52,11 @@ function getVisibleTasks() {
   return tasks;
 }
 
-//Work
 function updateCounter() {
   counter.textContent = `Активных задач: ${tasks.length}`;
 }
 
 function render() {
-  //Очищаем все прошлые задачи во избежание дублирования
   list.innerHTML = "";
   const visible = getVisibleTasks();
   for (let i = 0; i < visible.length; i++) {
