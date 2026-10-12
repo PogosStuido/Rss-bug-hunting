@@ -14,6 +14,7 @@ function addTask() {
   const text = input.value;
   errorEl.hidden = true;
   tasks.push({ id: nextId++, text: text, done: false });
+
   input.value = "";
   if (text.trim() === "") {
     errorEl.hidden = false;
