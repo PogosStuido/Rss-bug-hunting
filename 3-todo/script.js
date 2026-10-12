@@ -50,8 +50,10 @@ function updateCounter() {
 }
 
 function render() {
+  //Очищаем все прошлые задачи во избежание дублирования
+  list.innerHTML = "";
   const visible = getVisibleTasks();
-  for (let i = 0; i <= visible.length; i++) {
+  for (let i = 0; i < visible.length; i++) {
     const task = visible[i];
     const listElement = document.createElement("li");
     listElement.className = "task";
@@ -85,7 +87,7 @@ filterButtons.forEach((btn) => {
     filterButtons.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
     currentFilter = btn.dataset.filter;
-    // render(); Кажется это не надо тут
+    render();
   });
 });
 
