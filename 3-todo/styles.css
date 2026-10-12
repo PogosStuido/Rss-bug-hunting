@@ -132,8 +132,3 @@ body {
   color: #334155;
 }
 
-.completed {
-  .task__text {
-    text-decoration: line-through;
-  }
-}
