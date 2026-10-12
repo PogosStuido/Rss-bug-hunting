@@ -27,10 +27,13 @@ function addTask() {
 
 function toggleTask(id) {
   const task = tasks.find((task) => task.id === id);
-  task.done = true;
+  if (task) {
+    task.done = !task.done;
+  }
   render();
 }
 
+//Work
 function deleteTask(id) {
   tasks = tasks.filter((task) => task.id !== id);
   render();
@@ -42,9 +45,16 @@ function clearCompleted() {
 }
 
 function getVisibleTasks() {
+  if (currentFilter === 'active') {
+    return tasks.filter((task) => !task.done);
+  }
+  if (currentFilter === 'done') {
+    return tasks.filter((task) => task.done);
+  }
   return tasks;
 }
 
+//Work
 function updateCounter() {
   counter.textContent = `Активных задач: ${tasks.length}`;
 }
@@ -57,15 +67,15 @@ function render() {
     const task = visible[i];
     const listElement = document.createElement("li");
     listElement.className = "task";
-
+    if (task.done) {
+      listElement.classList.add("done");
+    }
 
     const span = document.createElement("span");
     span.className = "task__text";
     span.textContent = task.text;
     span.addEventListener("click", () => toggleTask(task.id));
-    if (task.done) {
-      span.classList.add("done");
-    }
+
 
     const del = document.createElement("button");
     del.className = "task__del";
