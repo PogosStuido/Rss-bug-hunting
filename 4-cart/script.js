@@ -1,8 +1,8 @@
 const products = [
-  { id: 1, name: "Кофе", price: 300 },
-  { id: 2, name: "Чай", price: 200 },
-  { id: 3, name: "Круассан", price: 150 },
-  { id: 4, name: "Маффин", price: 180 },
+  {id: 1, name: "Кофе", price: 300},
+  {id: 2, name: "Чай", price: 200},
+  {id: 3, name: "Круассан", price: 150},
+  {id: 4, name: "Маффин", price: 180},
 ];
 
 let cart = [];
@@ -39,7 +39,7 @@ function addToCart(id) {
     increaseQty(id);
     return;
   }
-  cart.push({ id: product.id, name: product.name, price: product.price, qty: 1 });
+  cart.push({id: product.id, name: product.name, price: product.price, qty: 1});
   renderCart();
 }
 
@@ -102,7 +102,12 @@ function renderCart() {
 
   badgeEl.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
   totalEl.textContent = total;
-  emptyMsg.hidden = true;
+
+  if (cart.length === 0) {
+    emptyMsg.hidden = false;
+  } else {
+    emptyMsg.hidden = true;
+  }
 }
 
 promoBtn.addEventListener("click", applyPromo);
