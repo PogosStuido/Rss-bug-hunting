@@ -1,8 +1,8 @@
 const products = [
-  { id: 1, name: "Кофе", price: 300 },
-  { id: 2, name: "Чай", price: 200 },
-  { id: 3, name: "Круассан", price: 150 },
-  { id: 4, name: "Маффин", price: 180 },
+  {id: 1, name: "Кофе", price: 300},
+  {id: 2, name: "Чай", price: 200},
+  {id: 3, name: "Круассан", price: 150},
+  {id: 4, name: "Маффин", price: 180},
 ];
 
 let cart = [];
@@ -24,30 +24,38 @@ function renderProducts() {
     card.innerHTML = `<h3>${p.name}</h3><p>${p.price} ₽</p>`;
     const btn = document.createElement("button");
     btn.textContent = "В корзину";
-    btn.addEventListener("click", addToCart);
+    btn.addEventListener("click", () => addToCart(p.id));
     card.appendChild(btn);
     productsEl.appendChild(card);
   });
 }
 
 function addToCart(id) {
-  const product = products.find((p) => p.id === id);
+  const product = products.find((product) => product.id === id);
   if (!product) {
     return;
   }
-  cart.push({ id: product.id, name: product.name, price: product.price, qty: 1 });
+  if (cart.find((item) => item.id === id)) {
+    increaseQty(id);
+    return;
+  }
+  cart.push({id: product.id, name: product.name, price: product.price, qty: 1});
   renderCart();
 }
 
 function increaseQty(id) {
   const item = cart.find((i) => i.id === id);
-  item.qty;
+  item.qty++;
   renderCart();
 }
 
 function decreaseQty(id) {
   const item = cart.find((i) => i.id === id);
-  item.qty--;
+  if (item.qty <= 1) {
+    item.qty = 1;
+  } else {
+    item.qty--;
+  }
   renderCart();
 }
 
@@ -64,15 +72,15 @@ function applyPromo() {
 }
 
 function clearCart() {
-  cart.splice(0, 1);
+  cart = [];
   renderCart();
 }
 
 function renderCart() {
   cartItemsEl.innerHTML = "";
-  let total = "";
+  let total = 0;
   cart.forEach((item) => {
-    const lineTotal = item.price;
+    const lineTotal = item.price * item.qty;
     const li = document.createElement("li");
     li.className = "cart-item";
     li.innerHTML = `<span>${item.name}</span>
@@ -85,16 +93,21 @@ function renderCart() {
     li.querySelector('[data-act="dec"]').addEventListener("click", () => decreaseQty(item.id));
     li.querySelector(".remove").addEventListener("click", () => removeItem(item.id));
     cartItemsEl.appendChild(li);
-    total += item.price * item.qty;
+    total += lineTotal;
   });
 
   if (discount) {
     total = total - total * discount;
   }
 
-  badgeEl.textContent = cart.length;
+  badgeEl.textContent = cart.reduce((sum, item) => sum + item.qty, 0);
   totalEl.textContent = total;
-  emptyMsg.hidden = true;
+
+  if (cart.length === 0) {
+    emptyMsg.hidden = false;
+  } else {
+    emptyMsg.hidden = true;
+  }
 }
 
 promoBtn.addEventListener("click", applyPromo);
@@ -102,3 +115,4 @@ clearBtn.addEventListener("click", clearCart);
 
 renderProducts();
 renderCart();
+

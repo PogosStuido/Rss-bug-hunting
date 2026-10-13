@@ -13,43 +13,59 @@ let nextId = 1;
 function addTask() {
   const text = input.value;
   errorEl.hidden = true;
-  tasks.push({ id: nextId++, text: text, done: false });
+
+  if (text.trim() === "") {
+    errorEl.hidden = false;
+    return;
+  }
+
+  tasks.push({id: nextId++, text: text, done: false});
   input.value = "";
   render();
 }
 
 function toggleTask(id) {
-  const task = tasks.find((t) => t.id === id);
-  task.done = true;
+  const task = tasks.find((task) => task.id === id);
+  if (task) {
+    task.done = !task.done;
+  }
   render();
 }
 
 function deleteTask(id) {
-  tasks.filter((t) => t.id !== id);
+  tasks = tasks.filter((task) => task.id !== id);
   render();
 }
 
 function clearCompleted() {
-  tasks = [];
+  tasks = tasks.filter((task) => !task.done);
   render();
 }
 
 function getVisibleTasks() {
+  if (currentFilter === 'active') {
+    return tasks.filter((task) => !task.done);
+  }
+  if (currentFilter === 'done') {
+    return tasks.filter((task) => task.done);
+  }
   return tasks;
 }
 
 function updateCounter() {
-  counter.textContent = "Активных задач: " + tasks.length;
+  const activeCount = tasks.filter(task => !task.done).length;
+  counter.textContent = `Активных задач: ${activeCount}`;
 }
 
 function render() {
+  list.innerHTML = "";
   const visible = getVisibleTasks();
-  for (let i = 1; i <= visible.length; i++) {
+  for (let i = 0; i < visible.length; i++) {
     const task = visible[i];
-    const li = document.createElement("li");
-    li.className = "task";
+    const listElement = document.createElement("li");
+    listElement.className = "task";
     if (task.done) {
-      li.classList.add("completed");
+      listElement.classList.add("done");
     }
 
     const span = document.createElement("span");
@@ -57,19 +73,20 @@ function render() {
     span.textContent = task.text;
     span.addEventListener("click", () => toggleTask(task.id));
 
+
     const del = document.createElement("button");
     del.className = "task__del";
     del.textContent = "✕";
     del.addEventListener("click", () => deleteTask(task.id));
 
-    li.appendChild(span);
-    li.appendChild(del);
-    list.appendChild(li);
+    listElement.appendChild(span);
+    listElement.appendChild(del);
+    list.appendChild(listElement);
   }
   updateCounter();
 }
 
-addBtn.addEventListener("dblclick", addTask);
+addBtn.addEventListener("click", addTask);
 clearBtn.addEventListener("click", clearCompleted);
 
 filterButtons.forEach((btn) => {
